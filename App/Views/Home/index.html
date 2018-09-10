@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block head_scripts %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/foundation-sites@6.5.0-rc.2/dist/css/foundation.min.css" integrity="sha256-iJQ8dZac/jUYHxiEnZJsyVpKcdq2sQvdA7t02QFmp30= sha384-SplqNBo/0ZlvSdwrP/riIPDozO5ck8+yIm++KVqyMAC53S6m3BaV+2OLpi7ULOOh sha512-ho6hK4sAWdCeqopNZWNy1d9Ok2hzfTLQLcGSr8ZlRzDzh6tNHkVoqSl6wgLsqls3yazwiG9H9dBCtSfPuiLRCQ==" crossorigin="anonymous">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito">
+<link rel="stylesheet" href="css/styles.css">
+{% endblock %}
+
+{% block body %}
+{% verbatim %}
+<div id="app">
+    <record-list
+            :records="records"
+            :all_count="all_count"
+            :is_loading="is_loading"
+            @add-phone="addPhone"
+            @remove-phone="removePhone"
+            @edit-phone="editPhone"
+            @search-phone="searchPhone"
+            @refresh-phones="refreshPhones"
+    ></record-list>
+</div>
+
+<template id="record-list">
+    <section class="records">
+        <h1>
+            Телефонная книга
+            <transition name="fade">
+                <small v-if="all_count">({{ all_count }})</small>
+            </transition>
+
+        </h1>
+        <div class="records__new input-group">
+            <input type="text"
+                   class="input-group-field"
+                   v-model="newRecordName"
+                   @keyup.enter="addRecord"
+                   placeholder="Имя"
+            >
+            <input type="text"
+                   class="input-group-field"
+                   v-model="newRecordPhone"
+                   @keyup.enter="addRecord"
+                   placeholder="Телефон"
+            >
+            <span class="input-group-button">
+
+              <button @click="editRecord"
+                      v-if="is_edited.phone"
+                      class="success button"
+              >
+                <i class="fa fa-save"></i> Сохранить
+              </button>
+              <button @click="addRecord"
+                      v-else
+                      class="button"
+              >
+                <i class="fa fa-plus"></i> Добавить
+              </button>
+
+            </span>
+        </div>
+        <transition-group name="list">
+            <div class="records__error" v-for="error in errors" :key="error">{{ error }}</div>
+        </transition-group>
+
+        <div class="records__clear button-group pull-left">
+            <button
+                    v-if="searchField.length > 0 && searchActive"
+                    @click="clearSearch"
+                    class="button alert small"
+            >Сбросить поиск</button>
+        </div>
+
+        <div class="records__clear button-group pull-right">
+            <input type="text"
+                   class="input-group-field"
+                   v-model="searchField"
+                   @keyup.enter="searchRecords"
+                   placeholder="Имя или телефон"
+            >
+            <span class="input-group-button">
+                <button class="button alert small"
+                        @click="searchRecords"
+                >
+                    <i class="fa fa-search"></i> Поиск
+                </button>
+            </span>
+        </div>
+        <div v-if="records.length">
+            <transition-group name="fade" tag="ul" class="records__list">
+                <record-item v-for="(record, index) in records"
+                             @pre-edit="preEditRecord"
+                             @remove="removeRecord"
+                             :record="record"
+                             :index="index"
+                             :key="index"
+                ></record-item>
+            </transition-group>
+        </div>
+        <div v-else class="records__list">
+            <span v-if="is_loading">
+                Идет загрузка...
+            </span>
+            <span v-else >
+                Пока ни одного телефона не добавлено
+            </span>
+        </div>
+    </section>
+</template>
+
+<template id="record-item">
+    <li class="records__item">
+        <div class="records__item__text">
+            <div class="records__item__text__name">
+                {{ record.name }}
+            </div>
+            <div class="records__item__text__phone">
+                {{ record.phone }}
+            </div>
+        </div>
+        <span class="input-group-button records__item__buttons">
+            <button class=" button primary pull-right"
+                    @click="$emit('pre-edit', index, record)"
+            >
+                <i class="fa fa-pencil"></i>
+            </button>
+            <button class=" button alert pull-right"
+                    @click="$emit('remove', record)"
+            >
+                <i class="fa fa-times"></i>
+            </button>
+        </span>
+    </li>
+</template>
+
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="js/main.js"></script>
+{% endverbatim %}
+{% endblock %}

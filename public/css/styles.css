@@ -1,0 +1,61 @@
+body {
+    background-color: #abc;
+}
+
+*,
+h1,
+button {
+    font-family: 'Nunito', sans-serif;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+    transition: opacity 0.5s;
+}
+
+.fade-enter,
+.fade-leave-active {
+    opacity: 0;
+}
+
+.records {
+    width: 100%;
+    max-width: 45rem;
+    padding: 1em;
+    margin: 1em auto;
+    overflow: auto;
+    background-color: #fff;
+    box-shadow: 0px 0.25rem 1rem rgba(0,0,0,0.25);
+}
+.records__error {
+    color:red;
+}
+
+.records__list {
+    clear: both;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.records__item {
+    margin-bottom: 0.5em;
+    position: relative;
+}
+.records__item__text {
+    display: flex;
+    border: 1px solid #ccc;
+    padding: 5px;
+}
+.records__item__text__phone {
+    font-weight: bold;
+    margin-left: 10px;
+}
+
+.records__item__buttons {
+    position: absolute;
+    height: 100%;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
+}

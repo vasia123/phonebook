@@ -90,13 +90,7 @@ class Router
             if (class_exists($controller)) {
                 $controller_object = new $controller();
                 $action = $matched_route_params['action'];
-
-                if (method_exists($controller_object, $action)) {
-                    $controller_object->{$action}();
-
-                } else {
-                    throw new \Exception("Метод $action контроллера $controller не найден или не может быть вызван.");
-                }
+                $controller_object->{$action}();
             } else {
                 throw new \Exception("Контроллер класса $controller не найден");
             }
